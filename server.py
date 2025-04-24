@@ -25,7 +25,7 @@ NGINX_SITES_AVAILABLE = "/etc/nginx/sites-available"
 NGINX_SITES_ENABLED = "/etc/nginx/sites-enabled"
 CACHE_BASE = "/var/bcdn"
 API_KEY = ""
-ALLOWED_IPS = ["116.203.239.241", "127.0.0.1"[
+ALLOWED_IPS = ["116.203.239.241", "127.0.0.1"]
 
 api_key_header = APIKeyHeader(name="X-API-Key")
 
