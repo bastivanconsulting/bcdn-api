@@ -336,18 +336,22 @@ def deploy_cdn_node(req: DeployRequest):
         credentials_file = CLOUDFLARE_INI
         dns_plugin = "--dns-cloudflare"
         plugin_args = f"--dns-cloudflare-credentials {credentials_file}"
+        propagation_arg = "--dns-cloudflare-propagation-seconds 30"
     elif req.dns_provider == "aws":
         credentials_file = AWS_INI
         dns_plugin = "--dns-route53"
         plugin_args = ""
+        propagation_arg = "--dns-route53-propagation-seconds 30"
     else:
         raise HTTPException(status_code=400, detail="Fournisseur DNS non supporté")
 
     if not os.path.isfile(credentials_file) and req.dns_provider != "aws":
         raise HTTPException(status_code=500, detail=f"Fichier credentials manquant : {credentials_file}")
 
-    certbot_cmd = f"certbot certonly {dns_plugin} {plugin_args} {certbot_args} " \
-                  f"--agree-tos --no-eff-email --email {CERTBOT_EMAIL} --dns-cloudflare-propagation-seconds 30 --non-interactive"
+    certbot_cmd = (
+        f"certbot certonly {dns_plugin} {plugin_args} {certbot_args} "
+        f"--agree-tos --no-eff-email --email {CERTBOT_EMAIL} {propagation_arg} --non-interactive"
+    )
 
     result = subprocess.run(certbot_cmd, shell=True)
     if result.returncode != 0:
